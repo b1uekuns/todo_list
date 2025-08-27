@@ -75,7 +75,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         if (AuthController.to.isLoading.value) {
                           return const Padding(
                             padding: EdgeInsets.symmetric(vertical: 12),
-                            child: CircularProgressIndicator(),
+                            child: Center(child: CircularProgressIndicator()),
                           );
                         }
                         if (AuthController.to.errorMessage.isNotEmpty) {
@@ -118,7 +118,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _buildEmailField() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 8),
         Text(
