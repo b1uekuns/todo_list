@@ -6,18 +6,16 @@ class WelcomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isFirstTimeInstallApp = Get.arguments ?? false;
+    final bool isFromOnboarding = Get.arguments == true;
+
     return Scaffold(
       backgroundColor: Color(0xFF121212),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        leading: isFirstTimeInstallApp
+        automaticallyImplyLeading: false,
+        leading: isFromOnboarding
             ? IconButton(
-                onPressed: () {
-                  if (Navigator.canPop(context)) {
-                    Get.back();
-                  }
-                },
+                onPressed: () => Get.back(),
                 icon: const Icon(
                   Icons.arrow_back_ios_new_outlined,
                   size: 18,
