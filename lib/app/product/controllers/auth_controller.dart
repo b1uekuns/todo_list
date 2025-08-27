@@ -16,12 +16,19 @@ class AuthController extends GetxController {
   final errorMessage = ''.obs;
   final lastAction = AuthAction.none.obs;
   final Rxn<User> user = Rxn<User>();
+  late Worker _authWorker;
 
   @override
   void onInit() {
     user.bindStream(_auth.authStateChanges());
-    ever(user, _handleAuthChanged);
+    _authWorker = ever(user, _handleAuthChanged);
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    _authWorker.dispose();
+    super.onClose();
   }
 
   void _handleAuthChanged(User? user) {
@@ -137,14 +144,15 @@ class AuthController extends GetxController {
     errorMessage.value = '';
     try {
       final gUser = await GoogleSignIn().signIn();
-      if (gUser == null) throw Exception('Google Sign-In cancelled');
+      if (gUser == null) {
+        return;
+      }
       final gAuth = await gUser.authentication;
       final cred = GoogleAuthProvider.credential(
         accessToken: gAuth.accessToken,
         idToken: gAuth.idToken,
       );
       await _auth.signInWithCredential(cred);
-      // Navigate to home after successful Google login
       Get.offAllNamed('/home');
     } on FirebaseAuthException catch (e) {
       _setError(e, AuthAction.google, title: 'google');

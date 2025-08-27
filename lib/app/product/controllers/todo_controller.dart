@@ -11,19 +11,25 @@ class TodoController extends GetxController {
   final storage = GetStorage('todo_box');
   final DialogService _dialogService = DialogService();
   String? _currentUserId;
+  late Worker _authWorker;
 
   @override
   void onInit() {
     super.onInit();
     _loadTodos();
-    // Listen to auth changes to refresh todos when user changes
-    ever(Get.find<AuthController>().user, (User? user) {
+    _authWorker = ever(Get.find<AuthController>().user, (User? user) {
       final newUserId = user?.uid;
       if (_currentUserId != newUserId) {
         _currentUserId = newUserId;
-        _loadTodos(); // Reload todos for new user
+        _loadTodos(); 
       }
     });
+  }
+
+  @override
+  void onClose() {
+    _authWorker.dispose();
+    super.onClose();
   }
 
   void add(

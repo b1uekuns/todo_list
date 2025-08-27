@@ -160,9 +160,12 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
           validator: (value) {
             final v = _sanitizeEmail(value ?? '');
-            if (v.isEmpty) return 'Please enter your email';
-            if (!GetUtils.isEmail(v))
+            if (v.isEmpty) {
+              return 'Please enter your email';
+            }
+            if (!GetUtils.isEmail(v)) {
               return 'Please enter a valid email address';
+            }
             return null;
           },
         ),
@@ -207,10 +210,12 @@ class _RegisterPageState extends State<RegisterPage> {
             filled: true,
           ),
           validator: (value) {
-            if (value == null || value.isEmpty)
+            if (value == null || value.isEmpty) {
               return 'Please enter your password';
-            if (value.length < 6)
+            }
+            if (value.length < 6) {
               return 'Password must be at least 6 characters';
+            }
             return null;
           },
         ),
@@ -255,10 +260,12 @@ class _RegisterPageState extends State<RegisterPage> {
             filled: true,
           ),
           validator: (value) {
-            if (value == null || value.isEmpty)
+            if (value == null || value.isEmpty) {
               return 'Please confirm your password';
-            if (value != _passwordController.text)
+            }
+            if (value != _passwordController.text) {
               return 'Passwords do not match';
+            }
             return null;
           },
         ),
@@ -319,13 +326,14 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  void _onRegisterPressed() {
-    if (AuthController.to.isLoading.value) return; // chống bấm trùng
+  Future<void> _onRegisterPressed() async {
+    if (AuthController.to.isLoading.value) {
+      return;
+    }
     if (_formKey.currentState?.validate() ?? false) {
       final email = _sanitizeEmail(_emailController.text);
       final pass = _passwordController.text;
-      AuthController.to.register(email, pass);
-      // Điều hướng sẽ do listener authState ở Login hoặc do controller thực hiện.
+      await AuthController.to.register(email, pass);
     }
   }
 }
